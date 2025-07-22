@@ -14,8 +14,9 @@ public class ProductController {
     @Autowired
     ProductServiceImpl productService;
 
-    @GetMapping("/")
-    ResponseEntity<?> getAllProduct(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "48") int pageSize) {
+    @GetMapping
+    ResponseEntity<?> getAllProduct(@RequestParam(name = "pageNumber",defaultValue = "0") int pageNumber, @RequestParam(name = "pageSize",defaultValue = "48") int pageSize) {
+        System.out.println(pageNumber + " " + pageSize);
         return ResponseEntity.ok(productService.getAllProduct(pageNumber, pageSize)
                 .map(ProductDto::new)
         );

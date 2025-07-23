@@ -1,20 +1,30 @@
 package com.minh.myshop.controller;
 
 import com.minh.myshop.dto.UserDto;
+import com.minh.myshop.entity.Role;
+import com.minh.myshop.exception.RoleNotFoundException;
 import com.minh.myshop.exception.UserIdNotFoundException;
+import com.minh.myshop.factory.RoleFactory;
+import com.minh.myshop.repository.RoleRepository;
 import com.minh.myshop.service.UserService;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/user")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final  RoleRepository roleRepository;
 
     @GetMapping("/profile/{id}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_STOREKEEPER')")
@@ -28,6 +38,19 @@ public class UserController {
         var user = userService.getUserById(userId);
         return ResponseEntity.ok(user.getRoles());
     }
+
+    @PutMapping("/addUserRole/{userId}")
+    public ResponseEntity<?> addUserRole(@PathVariable(name = "userId") Integer userId, @RequestBody Role role) throws UserIdNotFoundException, RoleNotFoundException {
+        System.out.println(role);
+        var user = userService.getUserById(userId);
+        role = roleRepository.findByName(role.getName());
+        var roles = user.getRoles();
+        roles.add(role);
+        user.setRoles(roles);
+        userService.save(user);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PutMapping("/profile/{id}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")

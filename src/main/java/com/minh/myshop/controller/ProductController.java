@@ -1,6 +1,7 @@
 package com.minh.myshop.controller;
 
 import com.minh.myshop.dto.ProductDto;
+import com.minh.myshop.enums.SortOrder;
 import com.minh.myshop.exception.ProductNotFoundException;
 import com.minh.myshop.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class ProductController {
     @GetMapping
     ResponseEntity<?> getAllProduct(@RequestParam(name = "pageNumber",defaultValue = "0") int pageNumber, @RequestParam(name = "pageSize",defaultValue = "48") int pageSize) {
         System.out.println(pageNumber + " " + pageSize);
-        return ResponseEntity.ok(productService.getAllProduct(pageNumber, pageSize)
+        return ResponseEntity.ok(productService.getAllProduct(pageNumber, pageSize, SortOrder.DESC)
                 .map(ProductDto::new)
         );
     }

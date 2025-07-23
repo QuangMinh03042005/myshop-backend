@@ -1,9 +1,8 @@
 package com.minh.myshop.service.impl;
 
 import com.minh.myshop.dto.CartProductDto;
-import com.minh.myshop.dto.OrderProductDto;
-import com.minh.myshop.entity.CartProduct;
 import com.minh.myshop.entity.Product;
+import com.minh.myshop.enums.SortOrder;
 import com.minh.myshop.exception.NotFoundException;
 import com.minh.myshop.exception.ProductStockInvalid;
 import com.minh.myshop.repository.ProductRepository;
@@ -39,8 +38,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProduct(int pageNumber, int pageSize) {
+    public Page<Product> getAllProduct(int pageNumber, int pageSize, SortOrder sortOrder) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        if(sortOrder == SortOrder.ASC) {
+            return productRepository.findAllByOrderByCreatedAtAsc(pageable);
+        }else if(sortOrder == SortOrder.DESC) {
+            return productRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }
         return productRepository.findAll(pageable);
     }
 

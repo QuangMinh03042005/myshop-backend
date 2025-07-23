@@ -23,6 +23,12 @@ public class UserController {
                 .body(new UserDto(userService.getUserById(id)));
     }
 
+    @GetMapping("/getUserRoles/{userId}")
+    public ResponseEntity<?> getUserRoles(@PathVariable(name = "userId") Integer userId) throws UserIdNotFoundException {
+        var user = userService.getUserById(userId);
+        return ResponseEntity.ok(user.getRoles());
+    }
+
     @PutMapping("/profile/{id}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<?> updateProfile(@PathVariable("id") Integer id, @RequestBody UserDto userDto) throws UserIdNotFoundException {

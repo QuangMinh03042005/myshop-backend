@@ -24,7 +24,7 @@ public class Shop {
     @Column(name = "shop_id")
     Integer shopId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
 

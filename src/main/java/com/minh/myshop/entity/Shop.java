@@ -34,6 +34,9 @@ public class Shop {
     @Column(name = "logo")
     String logo;
 
+    @Column(name = "introduce")
+    String introduce;
+
     @CreationTimestamp
     @Column(name = "created_at")
     Date createdAt;

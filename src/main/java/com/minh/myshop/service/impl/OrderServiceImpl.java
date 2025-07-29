@@ -18,17 +18,17 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
 
     @Override
-    public Order getOrderById(Integer id) {
+    public Order getById(Integer id) {
         return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("order not found with id = " + id));
     }
 
     @Override
-    public Integer findOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus) {
+    public Integer getOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus) {
         return orderRepository.findOrderIdByUserIdAndStatus(userId, orderStatus).orElseThrow(() -> new NotFoundException("can't find orderId with userId = " + userId + " or orderStatus = " + orderStatus));
     }
 
     @Override
-    public List<Integer> findAllOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus) {
+    public List<Integer> getAllOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus) {
         return orderRepository.findAllOrderIdByUserIdAndStatus(userId, orderStatus);
     }
 

@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public Product getProductById(Integer id) throws NotFoundException {
+    public Product getById(Integer id) throws NotFoundException {
         return productRepository.findById(id).orElseThrow(() -> new NotFoundException("product not found with id = " + id));
     }
 
@@ -33,12 +33,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProduct() {
+    public List<Product> getAll() {
         return productRepository.findAll();
     }
 
     @Override
-    public Page<Product> getAllProduct(int pageNumber, int pageSize, SortOrder sortOrder) {
+    public Page<Product> getAll(int pageNumber, int pageSize, SortOrder sortOrder) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         if(sortOrder == SortOrder.ASC) {
             return productRepository.findAllByOrderByCreatedAtAsc(pageable);
@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(Transactional.TxType.MANDATORY)
     public void changeProductStock(Integer id, int quantity) throws ProductStockInvalid {
-        var product = getProductById(id);
+        var product = getById(id);
         int newStock = product.getQuantityInStock() + quantity;
         if (newStock < 0) {
             throw new ProductStockInvalid("modafuck! đéo còn " + product.getProductName() + " cho mày mua");

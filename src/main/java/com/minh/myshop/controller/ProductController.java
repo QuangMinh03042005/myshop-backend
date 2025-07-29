@@ -18,14 +18,14 @@ public class ProductController {
     @GetMapping
     ResponseEntity<?> getAllProduct(@RequestParam(name = "pageNumber",defaultValue = "0") int pageNumber, @RequestParam(name = "pageSize",defaultValue = "48") int pageSize) {
         System.out.println(pageNumber + " " + pageSize);
-        return ResponseEntity.ok(productService.getAllProduct(pageNumber, pageSize, SortOrder.DESC)
+        return ResponseEntity.ok(productService.getAll(pageNumber, pageSize, SortOrder.DESC)
                 .map(ProductDto::new)
         );
     }
 
     @GetMapping("/{id}")
     ResponseEntity<?> getProduct(@PathVariable Integer id) throws ProductNotFoundException {
-        return ResponseEntity.ok(new ProductDto(productService.getProductById(id)));
+        return ResponseEntity.ok(new ProductDto(productService.getById(id)));
     }
 
     @PostMapping("/newProduct")

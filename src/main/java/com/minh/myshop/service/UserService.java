@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    User getUserById(Integer id) throws UserIdNotFoundException;
+    User getById(Integer id) throws UserIdNotFoundException;
 
     User getReferrerById(Integer id);
 

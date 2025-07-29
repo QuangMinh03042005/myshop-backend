@@ -15,7 +15,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartByUserId(Integer userId) {
-        var user = userService.getUserById(userId);
+        var user = userService.getById(userId);
         var cart = cartRepository.findCartByUser_userId(userId).orElse(null);
         // đảm bảo rằng mỗi user sẽ luôn có một giỏ hàng
         if (cart == null) {
@@ -26,7 +26,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart getCartById(Integer id) {
+    public Cart getById(Integer id) {
         return cartRepository.findById(id).orElseThrow(() -> new NotFoundException("cart not found with id = " + id));
     }
 

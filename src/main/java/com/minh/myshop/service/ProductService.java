@@ -12,13 +12,13 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    Product getProductById(Integer id) throws NotFoundException;
+    Product getById(Integer id) throws NotFoundException;
 
     Product getReferrerById(Integer id);
 
-    List<Product> getAllProduct();
+    List<Product> getAll();
 
-    Page<Product> getAllProduct(int pageNumber, int pageSize, SortOrder sortOrder);
+    Page<Product> getAll(int pageNumber, int pageSize, SortOrder sortOrder);
 
     void changeProductStock(Integer id, int quantity) throws Exception;
 

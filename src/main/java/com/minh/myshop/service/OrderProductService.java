@@ -12,13 +12,13 @@ import java.util.Optional;
 @Service
 public interface OrderProductService {
 
-    List<OrderProduct> findAllByOrderOrderId(Integer id);
+    List<OrderProduct> getAllByOrderOrderId(Integer id);
 
     @Transactional
     void deleteByOrderIdAndProductId(Integer orderId, Integer productId);
 
     @Transactional
-    Optional<OrderProduct> findByOrderIdAndProductId(Integer orderId, Integer productId);
+    Optional<OrderProduct> getByOrderIdAndProductId(Integer orderId, Integer productId);
 
     @Transactional
     void save(OrderProduct orderProduct);

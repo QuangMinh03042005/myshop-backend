@@ -37,10 +37,10 @@ public class OrderController {
 
     @GetMapping("/history")
     public ResponseEntity<?> orderHistory(@RequestParam(name = "userId") Integer userId) {
-        var orderIdList = orderService.findAllOrderIdByUserIdAndStatus(userId, OrderStatus.COMPLETED);
+        var orderIdList = orderService.getAllOrderIdByUserIdAndStatus(userId, OrderStatus.COMPLETED);
         var list = new ArrayList<OrderDto>();
         for (var orderId : orderIdList) {
-            var currOrderList = orderProductService.findAllByOrderOrderId(orderId).stream().map(OrderProductDto::new).collect(Collectors.toCollection(ArrayList::new));
+            var currOrderList = orderProductService.getAllByOrderOrderId(orderId).stream().map(OrderProductDto::new).collect(Collectors.toCollection(ArrayList::new));
             var orderDto = new OrderDto(orderId, currOrderList);
             list.add(orderDto);
         }
@@ -50,14 +50,14 @@ public class OrderController {
 
     @GetMapping("/")
     public ResponseEntity<?> getOrder(@RequestParam(name = "userId") Integer userId) throws NoSuchOrderException {
-        var orderId = orderService.findOrderIdByUserIdAndStatus(userId, OrderStatus.PENDING);
-        var currOrderList = orderProductService.findAllByOrderOrderId(orderId).stream().map(OrderProductDto::new).collect(Collectors.toCollection(ArrayList::new));
+        var orderId = orderService.getOrderIdByUserIdAndStatus(userId, OrderStatus.PENDING);
+        var currOrderList = orderProductService.getAllByOrderOrderId(orderId).stream().map(OrderProductDto::new).collect(Collectors.toCollection(ArrayList::new));
         return ResponseEntity.ok(new OrderDto(orderId, currOrderList));
     }
 
     @PostMapping("/buyAll")
     public ResponseEntity<?> buyAll(@RequestBody OrderDto orderDto) throws ProductStockInvalid, NoSuchOrderException {
-        var order = orderService.getOrderById(orderDto.getOrderId());
+        var order = orderService.getById(orderDto.getOrderId());
 //        productService.changeListProductStock(orderDto.getProductList());
         order.setOrderStatus(OrderStatus.COMPLETED);
         orderService.save(order);
@@ -66,7 +66,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestParam(name = "userId") Integer userId) throws UserIdNotFoundException {
-        var newOrder = Order.builder().user(userService.getUserById(userId)).build();
+        var newOrder = Order.builder().user(userService.getById(userId)).build();
         orderService.save(newOrder);
         return ResponseEntity.ok(newOrder);
     }

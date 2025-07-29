@@ -5,15 +5,14 @@ import com.minh.myshop.enums.OrderStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface OrderService {
-    Order getOrderById(Integer id);
+    Order getById(Integer id);
 
-    Integer findOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus);
+    Integer getOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus);
 
-    List<Integer> findAllOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus);
+    List<Integer> getAllOrderIdByUserIdAndStatus(Integer userId, OrderStatus orderStatus);
 
     Order getReferrerById(Integer id);
 

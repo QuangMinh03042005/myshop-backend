@@ -17,7 +17,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     OrderProductRepository orderProductRepository;
 
     @Override
-    public List<OrderProduct> findAllByOrderOrderId(Integer id) {
+    public List<OrderProduct> getAllByOrderOrderId(Integer id) {
         return orderProductRepository.findAllByOrderOrderId(id);
     }
 
@@ -27,7 +27,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public Optional<OrderProduct> findByOrderIdAndProductId(Integer orderId, Integer productId) {
+    public Optional<OrderProduct> getByOrderIdAndProductId(Integer orderId, Integer productId) {
         return orderProductRepository.findByOrderIdAndProductId(orderId, productId);
     }
 
@@ -38,7 +38,7 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     @Override
     public void changeOrderProductQuantity(Integer orderId, Integer productId, Integer quantity) throws NoSuchOrderException, ProductStockInvalid {
-        var op = findByOrderIdAndProductId(orderId, productId).orElseThrow(() -> new NoSuchOrderException("deo thay cai order nay"));
+        var op = getByOrderIdAndProductId(orderId, productId).orElseThrow(() -> new NoSuchOrderException("deo thay cai order nay"));
         if (op.getProduct().getQuantityInStock() < quantity) {
             throw new ProductStockInvalid("y la deo du hang de ban cho may!");
         }

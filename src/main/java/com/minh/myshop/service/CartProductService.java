@@ -12,4 +12,6 @@ public interface CartProductService {
     List<CartProduct> getAllProductByCartId(Integer cartId);
 
     CartProduct getReferrerById(CartProductId cartProductId);
+
+    boolean existById(CartProductId cartProductId);
 }

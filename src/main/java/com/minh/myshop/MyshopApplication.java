@@ -26,5 +26,11 @@ public class MyshopApplication implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+//        Order order = Order.builder().user(userRepository.findById(252).get()).build();
+//        var savedOrder = orderRepository.saveAndFlush(order);
+//        System.out.println(savedOrder.getCreatedAt());
+//        System.out.println(savedOrder.getOrderStatus());
+//        savedOrder.setOrderStatus(OrderStatus.COMPLETED);
+//        orderRepository.save(savedOrder);
     }
 }

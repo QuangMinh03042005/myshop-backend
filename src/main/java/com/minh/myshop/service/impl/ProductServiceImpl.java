@@ -49,6 +49,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<Product> getAllByShopId(Integer shopId, int pageNumber, int pageSize, SortOrder sortOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        if(sortOrder == SortOrder.ASC) {
+            return productRepository.findAllByOrderByCreatedAtAsc(pageable);
+        }else if(sortOrder == SortOrder.DESC) {
+            return productRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
     @Transactional(Transactional.TxType.MANDATORY)
     public void changeProductStock(Integer id, int quantity) throws ProductStockInvalid {
         var product = getById(id);
@@ -61,12 +72,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = ProductStockInvalid.class)
+    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = ProductStockInvalid.class)
     public void changeListProductStock(List<CartProductDto> cartProductDtoList) throws ProductStockInvalid {
         Product product = null;
         for (var cartProductDto : cartProductDtoList) {
             changeProductStock(cartProductDto.getProductId(), -cartProductDto.getQuantity());
         }
 
+    }
+
+    @Override
+    public boolean validateQuantity(Integer productId, int quantity) {
+        return productRepository.existsByProductIdAndQuantityInStockGreaterThanEqual(productId, quantity);
     }
 }

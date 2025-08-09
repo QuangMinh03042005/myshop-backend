@@ -3,14 +3,18 @@ package com.minh.myshop.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minh.myshop.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @Entity
 @Table(name = "orders")
@@ -39,7 +43,7 @@ public class Order {
     Date createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", updatable = false)
     Date updatedAt;
 
     @Column(name = "total_amount")

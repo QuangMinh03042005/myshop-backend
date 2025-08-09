@@ -119,8 +119,15 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<String> handleExpiredToken(ExpiredJwtException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token expired");
+    @ExceptionHandler(OutOfQuantityInStock.class)
+    public ResponseEntity<?> handleOutOfQuantityInStock(OutOfQuantityInStock exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        ApiResponseDto.builder()
+                                .status(String.valueOf(ResponseStatus.FAIL))
+                                .message(exception.getMessage())
+                                .build()
+                );
     }
 }

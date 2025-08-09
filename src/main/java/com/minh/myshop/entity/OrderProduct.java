@@ -51,10 +51,10 @@ public class OrderProduct {
         this.orderProductId = new OrderProductId(order.getOrderId(), product.getProductId());
     }
 
-    public OrderProduct(CartProductDto cartProductDto, Order order, Integer orderId, Product product, Integer productId) {
+    public OrderProduct(CartProductDto cartProductDto, Order order, Integer orderId, Product product) {
         this.order = order;
         this.product = product;
-        this.orderProductId = new OrderProductId(orderId, productId);
+        this.orderProductId = new OrderProductId(orderId, cartProductDto.getProductId());
         this.quantity = cartProductDto.getQuantity();
         this.unitPrice = cartProductDto.getUnitPrice();
         this.totalPrice = cartProductDto.getTotalPrice();

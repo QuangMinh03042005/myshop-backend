@@ -25,7 +25,8 @@ public class Product {
     @Column(name = "product_name")
     String productName;
 
-    @Column(name = "description")
+    @Lob
+    @Column(name = "description", columnDefinition = "LONGTEXT")
     String description;
 
     @Column(name = "image")

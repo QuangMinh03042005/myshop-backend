@@ -36,4 +36,9 @@ public class CartProductServiceImpl implements CartProductService {
         }
         return o;
     }
+
+    @Override
+    public boolean existById(CartProductId cartProductId) {
+        return cartProductRepository.existsById(cartProductId);
+    }
 }

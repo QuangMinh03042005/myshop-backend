@@ -10,7 +10,7 @@ import java.util.List;
 public class SignInResponseDto {
     private String token;
     private String type = "Bearer";
-    private Integer id;
+    private Integer userId;
     private String username;
     private String email;
     private List<String> roles;

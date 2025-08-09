@@ -18,4 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     //order by createdAt DESC (oldest top)
     Page<Product> findAllByOrderByCreatedAtAsc(Pageable pageable);
+
+    // check quantity <= quantityInStock
+    boolean existsByProductIdAndQuantityInStockGreaterThanEqual(Integer productId, int quantity);
 }

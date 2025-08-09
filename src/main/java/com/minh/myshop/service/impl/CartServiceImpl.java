@@ -32,11 +32,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getReferrerById(Integer id) {
-//        return cartRepository.findReferrerByCartId(id).orElseThrow(() -> new NotFoundException("cart not found with id = " + id));
-        var o = cartRepository.getReferenceById(id);
-        if (o == null) {
-            throw new NotFoundException("cart not found with id = " + id);
-        }
-        return o;
+        return cartRepository.getReferenceById(id);
     }
 }

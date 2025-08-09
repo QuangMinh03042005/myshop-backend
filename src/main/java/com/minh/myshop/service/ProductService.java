@@ -20,7 +20,11 @@ public interface ProductService {
 
     Page<Product> getAll(int pageNumber, int pageSize, SortOrder sortOrder);
 
+    Page<Product> getAllByShopId(Integer shopId,int pageNumber, int pageSize, SortOrder sortOrder);
+
     void changeProductStock(Integer id, int quantity) throws Exception;
 
     void changeListProductStock(List<CartProductDto> cartProductDtoList) throws ProductStockInvalid;
+
+    boolean validateQuantity(Integer productId, int quantity);
 }

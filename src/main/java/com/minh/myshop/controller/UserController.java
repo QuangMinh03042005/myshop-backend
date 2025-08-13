@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final  RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @GetMapping("/profile/{id}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_STOREKEEPER')")
@@ -41,7 +41,7 @@ public class UserController {
         var roles = user.getRoles();
         roles.add(role);
         user.setRoles(roles);
-        userService.save(user);
+        userService.addUser(user);
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +52,7 @@ public class UserController {
         System.out.println(userDto);
         var user = userService.getById(id);
         user.loadFromDto(userDto);
-        userService.save(user);
+        userService.addUser(user);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

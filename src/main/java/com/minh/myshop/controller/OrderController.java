@@ -60,14 +60,14 @@ public class OrderController {
         var order = orderService.getById(orderDto.getOrderId());
 //        productService.changeListProductStock(orderDto.getProductList());
         order.setOrderStatus(OrderStatus.COMPLETED);
-        orderService.save(order);
+        orderService.addOrder(order);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestParam(name = "userId") Integer userId) throws UserIdNotFoundException {
         var newOrder = Order.builder().user(userService.getById(userId)).build();
-        orderService.save(newOrder);
+        orderService.addOrder(newOrder);
         return ResponseEntity.ok(newOrder);
     }
 

@@ -16,11 +16,13 @@ public interface ProductService {
 
     Product getReferrerById(Integer id);
 
+    Product addProduct(Product product);
+
     List<Product> getAll();
 
     Page<Product> getAll(int pageNumber, int pageSize, SortOrder sortOrder);
 
-    Page<Product> getAllByShopId(Integer shopId,int pageNumber, int pageSize, SortOrder sortOrder);
+    Page<Product> getAllByShopId(Integer shopId, int pageNumber, int pageSize, SortOrder sortOrder);
 
     void changeProductStock(Integer id, int quantity) throws Exception;
 

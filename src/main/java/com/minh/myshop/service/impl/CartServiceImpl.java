@@ -15,7 +15,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartByUserId(Integer userId) {
-        var user = userService.getById(userId);
+        var user = userService.getReferrerById(userId);
         var cart = cartRepository.findCartByUser_userId(userId).orElse(null);
         // đảm bảo rằng mỗi user sẽ luôn có một giỏ hàng
         if (cart == null) {
@@ -33,5 +33,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getReferrerById(Integer id) {
         return cartRepository.getReferenceById(id);
+    }
+
+    @Override
+    public Cart addCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 }

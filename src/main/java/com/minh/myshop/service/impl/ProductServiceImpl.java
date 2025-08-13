@@ -33,6 +33,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
     public List<Product> getAll() {
         return productRepository.findAll();
     }
@@ -40,9 +45,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAll(int pageNumber, int pageSize, SortOrder sortOrder) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        if(sortOrder == SortOrder.ASC) {
+        if (sortOrder == SortOrder.ASC) {
             return productRepository.findAllByOrderByCreatedAtAsc(pageable);
-        }else if(sortOrder == SortOrder.DESC) {
+        } else if (sortOrder == SortOrder.DESC) {
             return productRepository.findAllByOrderByCreatedAtDesc(pageable);
         }
         return productRepository.findAll(pageable);
@@ -51,9 +56,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAllByShopId(Integer shopId, int pageNumber, int pageSize, SortOrder sortOrder) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        if(sortOrder == SortOrder.ASC) {
+        if (sortOrder == SortOrder.ASC) {
             return productRepository.findAllByOrderByCreatedAtAsc(pageable);
-        }else if(sortOrder == SortOrder.DESC) {
+        } else if (sortOrder == SortOrder.DESC) {
             return productRepository.findAllByOrderByCreatedAtDesc(pageable);
         }
         return productRepository.findAll(pageable);

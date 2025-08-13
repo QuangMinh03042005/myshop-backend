@@ -10,9 +10,9 @@ public interface UserService {
 
     User getReferrerById(Integer id);
 
+    User addUser(User user);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
-
-    void save(User user);
 }

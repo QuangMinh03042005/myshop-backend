@@ -9,9 +9,12 @@ public interface CartProductService {
 
     CartProduct getById(CartProductId cartProductId);
 
-    List<CartProduct> getAllProductByCartId(Integer cartId);
-
     CartProduct getReferrerById(CartProductId cartProductId);
 
+    CartProduct addCartProduct(CartProduct cartProduct);
+
+    List<CartProduct> getAllProductByCartId(Integer cartId);
+
     boolean existById(CartProductId cartProductId);
+
 }

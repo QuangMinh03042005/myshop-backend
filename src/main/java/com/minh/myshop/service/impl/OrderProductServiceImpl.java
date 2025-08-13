@@ -32,8 +32,8 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public void save(OrderProduct orderProduct) {
-        orderProductRepository.save(orderProduct);
+    public OrderProduct addOrderProduct(OrderProduct orderProduct) {
+        return orderProductRepository.save(orderProduct);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class OrderProductServiceImpl implements OrderProductService {
             throw new ProductStockInvalid("y la deo du hang de ban cho may!");
         }
         op.setQuantity(quantity);
-        save(op);
+        this.addOrderProduct(op);
     }
 }

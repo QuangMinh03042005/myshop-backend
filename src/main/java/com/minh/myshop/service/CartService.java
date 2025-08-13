@@ -8,4 +8,6 @@ public interface CartService {
     public Cart getById(Integer id);
 
     public Cart getReferrerById(Integer id);
+
+    public Cart addCart(Cart cart);
 }

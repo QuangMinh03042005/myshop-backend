@@ -21,7 +21,7 @@ public interface OrderProductService {
     Optional<OrderProduct> getByOrderIdAndProductId(Integer orderId, Integer productId);
 
     @Transactional
-    void save(OrderProduct orderProduct);
+    OrderProduct addOrderProduct(OrderProduct orderProduct);
 
     @Transactional
     void changeOrderProductQuantity(Integer orderId, Integer productId, Integer quantity) throws NoSuchOrderException, ProductStockInvalid;

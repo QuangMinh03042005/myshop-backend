@@ -9,5 +9,7 @@ import java.util.List;
 public interface CategoryService {
     Category getById(Integer id);
 
+    Category addCategory(Category category);
+
     List<Category> getAllCategory();
 }

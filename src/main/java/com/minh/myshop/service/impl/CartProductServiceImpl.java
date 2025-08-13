@@ -22,11 +22,6 @@ public class CartProductServiceImpl implements CartProductService {
     }
 
     @Override
-    public List<CartProduct> getAllProductByCartId(Integer cartId) {
-        return cartProductRepository.findAllByCart_cartId(cartId);
-    }
-
-    @Override
     public CartProduct getReferrerById(CartProductId cartProductId) {
         CartProduct o;
         try {
@@ -35,6 +30,16 @@ public class CartProductServiceImpl implements CartProductService {
             throw new NotFoundException("cartId = " + cartProductId.getCartId() + " or productId = " + cartProductId.getProductId() + " not found");
         }
         return o;
+    }
+
+    @Override
+    public CartProduct addCartProduct(CartProduct cartProduct) {
+        return cartProductRepository.save(cartProduct);
+    }
+
+    @Override
+    public List<CartProduct> getAllProductByCartId(Integer cartId) {
+        return cartProductRepository.findAllByCart_cartId(cartId);
     }
 
     @Override

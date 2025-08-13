@@ -8,4 +8,6 @@ public interface ShopService {
     Shop getById(Integer shopId);
 
     Shop getByProductId(Integer productId);
+
+    Shop addShop(Shop shop);
 }

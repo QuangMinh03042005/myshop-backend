@@ -24,4 +24,10 @@ public class ShopServiceImpl implements ShopService {
         var product = productService.getById(productId);
         return product.getShop();
     }
+
+    @Override
+    public Shop addShop(Shop shop) {
+        return shopRepository.save(shop);
+
+    }
 }

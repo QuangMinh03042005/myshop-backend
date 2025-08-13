@@ -2,14 +2,11 @@ package com.minh.myshop.service.impl;
 
 import com.minh.myshop.entity.User;
 import com.minh.myshop.exception.NotFoundException;
-import com.minh.myshop.exception.UserIdNotFoundException;
 import com.minh.myshop.repository.UserRepository;
 import com.minh.myshop.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);
+    public User addUser(User user) {
+        return userRepository.save(user);
     }
 }

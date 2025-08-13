@@ -18,6 +18,7 @@ public class ProductDto {
     private Integer categoryId;
     private Integer shopId;
     private String shopName;
+    private String storageLocation;
     private Date createdAt;
     private Date updatedAt;
 
@@ -33,5 +34,6 @@ public class ProductDto {
         this.categoryId = product.getCategory().getCategoryId();
         this.shopId = product.getShop().getShopId();
         this.shopName = product.getShop().getShopName();
+        this.storageLocation = product.getStorageLocation();
     }
 }

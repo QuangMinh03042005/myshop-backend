@@ -11,6 +11,7 @@ public class ShopDto {
     private String shopName;
     private String logo;
     private String introduce;
+    private String address;
     private Date created_at;
 
     public ShopDto(Shop shop) {
@@ -19,5 +20,6 @@ public class ShopDto {
         this.logo = shop.getLogo();
         this.introduce = shop.getIntroduce();
         this.created_at = shop.getCreatedAt();
+        this.address = shop.getAddress();
     }
 }

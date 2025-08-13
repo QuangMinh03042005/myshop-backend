@@ -1,11 +1,9 @@
 package com.minh.myshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import java.util.Date;
 
@@ -62,4 +60,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     Shop shop;
+
+    @Column(name = "storage_location")
+    String storageLocation;
 }

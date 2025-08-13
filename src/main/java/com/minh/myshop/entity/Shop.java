@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
@@ -36,6 +34,9 @@ public class Shop {
 
     @Column(name = "introduce")
     String introduce;
+
+    @Column(name = "address")
+    String address;
 
     @CreationTimestamp
     @Column(name = "created_at")

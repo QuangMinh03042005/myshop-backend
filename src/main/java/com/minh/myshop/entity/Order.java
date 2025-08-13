@@ -1,6 +1,7 @@
 package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.minh.myshop.enums.EPaymentMethod;
 import com.minh.myshop.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @Entity
 @Table(name = "orders")
@@ -48,6 +46,14 @@ public class Order {
 
     @Column(name = "total_amount")
     BigDecimal totalAmount;
+
+    @Column(name = "to_location")
+    String toLocation;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    @Column(name = "payment_method")
+    EPaymentMethod paymentMethod = EPaymentMethod.CASH;
 
     public void addProduct(Product product, int count) {
         OrderProduct orderProduct = new OrderProduct(this, product, count);

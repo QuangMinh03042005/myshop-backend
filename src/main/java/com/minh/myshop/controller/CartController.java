@@ -39,23 +39,33 @@ public class CartController {
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> getCart(@PathVariable("userId") Integer userId) {
+    ResponseEntity<?> getUserCartId(@PathVariable("userId") Integer userId) {
+        var cart = cartService.getCartByUserId(userId);
+        return ResponseEntity.ok().body(cart);
+    }
+
+    @GetMapping("/products/{userId}")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<?> getUserCart(@PathVariable("userId") Integer userId) {
         var cart = cartService.getCartByUserId(userId);
         var cartProductListDto = cartProductService.getAllProductByCartId(cart.getCartId()).stream().map(CartProductDto::new).toList();
         var cartDto = new CartDto(cart.getCartId(), cartProductListDto);
         return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping("/addProductToCart")
+    @PostMapping("/products")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     ResponseEntity<?> addProductToCart(@RequestBody CartProductDto cartProductDto) throws OutOfQuantityInStock {
-        CartProduct cartProduct = null;
+        if (!productService.validateQuantity(cartProductDto.getProductId(), cartProductDto.getQuantity())) {
+            throw new OutOfQuantityInStock("Sản phẩm hiện tại đã hết hàng");
+        }
         CartProductId cartProductId = new CartProductId(cartProductDto.getCartId(), cartProductDto.getProductId());
+        CartProduct cartProduct;
         if (cartProductService.existById(cartProductId)) {
             cartProduct = cartProductService.getById(cartProductId);
             int newQuantity = cartProduct.getQuantity() + cartProductDto.getQuantity();
             if (!productService.validateQuantity(cartProduct.getCartProductId().getProductId(), newQuantity)) {
-                throw new OutOfQuantityInStock("\n" +
+                throw new OutOfQuantityInStock(
                         "Bạn đã có " + cartProduct.getQuantity() + " sản phẩm trong giỏ hàng. Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.");
             }
             cartProduct.setQuantity(newQuantity);
@@ -66,33 +76,45 @@ public class CartController {
                     .cartProductId(cartProductId)
                     .unitPrice(cartProductDto.getUnitPrice())
                     .quantity(cartProductDto.getQuantity())
-                    .totalPrice(cartProductDto.getTotalPrice())
                     .build();
         }
         cartProductRepository.save(cartProduct);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/deleteProductFromCart")
+    @PutMapping("/products")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> deleteProductFromCart(@RequestBody CartProductId cartProductId) {
-        System.out.println(cartProductId);
+    ResponseEntity<?> updateProductFromCart(@RequestBody CartProductDto cartProductDto) throws OutOfQuantityInStock {
+        CartProductId cartProductId = new CartProductId(cartProductDto.getCartId(), cartProductDto.getProductId());
+        CartProduct cartProduct = cartProductService.getById(cartProductId);
+        if (!productService.validateQuantity(cartProductDto.getProductId(), cartProductDto.getQuantity())) {
+            throw new OutOfQuantityInStock(
+                    "Bạn đã có " + cartProduct.getQuantity() + " sản phẩm trong giỏ hàng. Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.");
+        }
+        cartProduct.setQuantity(cartProductDto.getQuantity());
+        cartProductRepository.save(cartProduct);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/products")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<?> removeProductFromCart(@RequestBody CartProductId cartProductId) {
         var cartProduct = cartProductService.getById(cartProductId);
         cartProductRepository.delete(cartProduct);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/buyFromCart/{userId}")
+    @PostMapping("/checkoutCart/{userId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
-    ResponseEntity<?> buyFromCart(@PathVariable("userId") Integer userId, @RequestBody List<CartProductDto> cartProductDtoList) throws ProductStockInvalid {
+    ResponseEntity<?> checkoutCart(@PathVariable("userId") Integer userId, @RequestBody List<CartProductDto> cartProductDtoList) throws ProductStockInvalid {
 //         1. change all product stock
         productService.changeListProductStock(cartProductDtoList);
         // 2. create a new order
         System.out.println(cartProductDtoList);
         Order order = Order.builder().user(userService.getReferrerById(userId)).build();
         // 3. save it to db and get it's id
-        var savedOrder =  orderRepository.saveAndFlush(order);
+        var savedOrder = orderRepository.saveAndFlush(order);
         var orderId = savedOrder.getOrderId();
         // 4. map cartProductDto to OrderProduct
         List<OrderProduct> orderProductList = cartProductDtoList.stream().map(cartProductDto -> new OrderProduct(cartProductDto, orderService.getReferrerById(orderId), orderId, productService.getReferrerById(cartProductDto.getProductId()))).toList();

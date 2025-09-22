@@ -1,8 +1,7 @@
 package com.minh.myshop.dto;
 
 import com.minh.myshop.entity.User;
-import com.minh.myshop.enums.EGender;
-import jakarta.validation.constraints.AssertTrue;
+import com.minh.myshop.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,7 @@ public class UserDto {
 
     private String phone;
 
-    private EGender gender;
+    private Gender gender;
 
     public UserDto(User user) {
         username = user.getUsername();

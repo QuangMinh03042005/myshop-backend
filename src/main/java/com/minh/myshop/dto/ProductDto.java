@@ -1,13 +1,15 @@
 package com.minh.myshop.dto;
 
 import com.minh.myshop.entity.Product;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto {
     private Integer productId;
     private String productName;

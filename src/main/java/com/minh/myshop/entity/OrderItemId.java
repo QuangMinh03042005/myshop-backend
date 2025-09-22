@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderProductId implements Serializable {
+public class OrderItemId implements Serializable {
     Integer orderId;
     Integer productId;
 }

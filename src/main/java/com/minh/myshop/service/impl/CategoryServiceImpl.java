@@ -16,8 +16,8 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
 
     @Override
-    public Category getById(Integer id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("category not found with id = " + id));
+    public Category getById(Integer categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("category not found with id = " + categoryId));
     }
 
     @Override
@@ -28,5 +28,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category getReferrer(Integer categoryId) {
+        return categoryRepository.getReferenceById(categoryId);
     }
 }

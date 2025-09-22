@@ -1,10 +1,10 @@
 package com.minh.myshop.service.impl;
 
-import com.minh.myshop.entity.OrderProduct;
+import com.minh.myshop.entity.OrderItem;
 import com.minh.myshop.exception.NoSuchOrderException;
 import com.minh.myshop.exception.ProductStockInvalid;
-import com.minh.myshop.repository.OrderProductRepository;
-import com.minh.myshop.service.OrderProductService;
+import com.minh.myshop.repository.OrderItemRepository;
+import com.minh.myshop.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrderProductServiceImpl implements OrderProductService {
+public class OrderItemServiceImpl implements OrderItemService {
     @Autowired
-    OrderProductRepository orderProductRepository;
+    OrderItemRepository orderProductRepository;
 
     @Override
-    public List<OrderProduct> getAllByOrderOrderId(Integer id) {
+    public List<OrderItem> getAllByOrderOrderId(Integer id) {
         return orderProductRepository.findAllByOrderOrderId(id);
     }
 
@@ -27,12 +27,12 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public Optional<OrderProduct> getByOrderIdAndProductId(Integer orderId, Integer productId) {
+    public Optional<OrderItem> getByOrderIdAndProductId(Integer orderId, Integer productId) {
         return orderProductRepository.findByOrderIdAndProductId(orderId, productId);
     }
 
     @Override
-    public OrderProduct addOrderProduct(OrderProduct orderProduct) {
+    public OrderItem addOrderProduct(OrderItem orderProduct) {
         return orderProductRepository.save(orderProduct);
     }
 

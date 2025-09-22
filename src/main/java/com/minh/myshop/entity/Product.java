@@ -1,5 +1,6 @@
 package com.minh.myshop.entity;
 
+import com.minh.myshop.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -63,4 +64,13 @@ public class Product {
 
     @Column(name = "storage_location")
     String storageLocation;
+
+    public void loadFromDto(ProductDto product) {
+        this.productName = product.getProductName();
+        this.description = product.getDescription();
+        this.image = product.getImage();
+        this.quantityInStock = product.getQuantityInStock();
+        this.price = product.getPrice();
+        this.storageLocation = product.getStorageLocation();
+    }
 }

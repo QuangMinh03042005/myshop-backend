@@ -1,8 +1,8 @@
 package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.minh.myshop.enums.EPaymentMethod;
 import com.minh.myshop.enums.OrderStatus;
+import com.minh.myshop.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -47,15 +49,17 @@ public class Order {
     @Column(name = "total_amount")
     BigDecimal totalAmount;
 
-    @Column(name = "to_location")
-    String toLocation;
+    @Column(name = "shipping_address")
+    String shippingAddress;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(name = "payment_method")
-    EPaymentMethod paymentMethod = EPaymentMethod.CASH;
+    PaymentMethod paymentMethod = PaymentMethod.COD;
 
-    public void addProduct(Product product, int count) {
-        OrderProduct orderProduct = new OrderProduct(this, product, count);
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @JsonIgnore
+    @Builder.Default
+    List<OrderItem> items = new ArrayList<>();
+
 }

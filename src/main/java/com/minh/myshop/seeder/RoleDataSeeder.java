@@ -1,6 +1,5 @@
 package com.minh.myshop.seeder;
 
-import com.minh.myshop.entity.Role;
 import com.minh.myshop.enums.ERole;
 import com.minh.myshop.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class RoleDataSeeder {
 
         for (ERole erole : roles) {
             if (roleRepository.findByName(erole) == null) {
-                roleRepository.save(new Role(erole));
+                roleRepository.save(new com.minh.myshop.entity.Role(erole));
             }
         }
 

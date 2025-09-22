@@ -7,9 +7,11 @@ import java.util.List;
 
 @Service
 public interface CategoryService {
-    Category getById(Integer id);
+    Category getById(Integer categoryId);
 
     Category addCategory(Category category);
+
+    Category getReferrer(Integer categoryId);
 
     List<Category> getAllCategory();
 }

@@ -1,11 +1,15 @@
 package com.minh.myshop.dto;
 
 import com.minh.myshop.entity.Shop;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ShopDto {
     private Integer shopId;
     private String shopName;

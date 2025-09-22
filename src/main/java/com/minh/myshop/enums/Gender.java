@@ -1,6 +1,6 @@
 package com.minh.myshop.enums;
 
-public enum EGender {
+public enum Gender {
     MALE,
     FEMALE
 }

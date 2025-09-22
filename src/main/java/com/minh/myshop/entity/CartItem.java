@@ -2,7 +2,6 @@ package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,14 +10,14 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "cart_products")
+@Table(name = "cart_items")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CartProduct {
+public class CartItem {
     @EmbeddedId
-    CartProductId cartProductId = new CartProductId();
+    CartItemId cartItemId = new CartItemId();
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @MapsId("cartId")
@@ -41,22 +40,11 @@ public class CartProduct {
     @Column(name = "total_price", insertable = false, updatable = false)
     BigDecimal totalPrice;
 
-    public CartProduct(Cart cart, Product product, int quantity) {
+    public CartItem(Cart cart, Product product, int quantity) {
         this.cart = cart;
         this.product = product;
         this.unitPrice = this.product.getPrice();
         this.quantity = quantity;
-        this.cartProductId = new CartProductId(this.cart.getCartId(), this.product.getProductId());
-    }
-
-
-    @Override
-    public String toString() {
-        return "{" +
-//                " orderId=" + order.getOrderId() +
-//                ", productId=" + product.getProductId() +
-                " productName=" + product.getProductName() +
-                ", quantity=" + quantity +
-                '}';
+        this.cartItemId = new CartItemId(this.cart.getCartId(), this.product.getProductId());
     }
 }

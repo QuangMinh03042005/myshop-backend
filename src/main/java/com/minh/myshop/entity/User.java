@@ -2,13 +2,15 @@ package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minh.myshop.dto.UserDto;
-import com.minh.myshop.enums.EGender;
+import com.minh.myshop.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -48,7 +50,7 @@ public class User {
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EGender gender = EGender.MALE;
+    private Gender gender = Gender.MALE;
 
     // TODO
 //    private String jwtToken;

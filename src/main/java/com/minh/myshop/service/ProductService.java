@@ -1,6 +1,7 @@
 package com.minh.myshop.service;
 
-import com.minh.myshop.dto.CartProductDto;
+import com.minh.myshop.dto.OrderItemDto;
+import com.minh.myshop.dto.ProductDto;
 import com.minh.myshop.entity.Product;
 import com.minh.myshop.enums.SortOrder;
 import com.minh.myshop.exception.NotFoundException;
@@ -14,9 +15,13 @@ import java.util.List;
 public interface ProductService {
     Product getById(Integer id) throws NotFoundException;
 
-    Product getReferrerById(Integer id);
+    Product getReferrer(Integer id);
+
+    Product createProduct(ProductDto productDto);
 
     Product addProduct(Product product);
+
+    Product updateProduct(ProductDto productDto);
 
     List<Product> getAll();
 
@@ -26,7 +31,7 @@ public interface ProductService {
 
     void changeProductStock(Integer id, int quantity) throws Exception;
 
-    void changeListProductStock(List<CartProductDto> cartProductDtoList) throws ProductStockInvalid;
+    void changeListProductStock(List<OrderItemDto> itemDtos) throws ProductStockInvalid;
 
     boolean validateQuantity(Integer productId, int quantity);
 }

@@ -1,7 +1,7 @@
 package com.minh.myshop.enums;
 
-public enum EPaymentMethod {
-    CASH,
+public enum PaymentMethod {
+    COD,
     BANK_TRANSFER,
     CREDIT_CART
 }

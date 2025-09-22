@@ -1,14 +1,18 @@
 package com.minh.myshop.service.impl;
 
-import com.minh.myshop.dto.CartProductDto;
+import com.minh.myshop.dto.OrderItemDto;
+import com.minh.myshop.dto.ProductDto;
 import com.minh.myshop.entity.Product;
 import com.minh.myshop.enums.SortOrder;
 import com.minh.myshop.exception.NotFoundException;
 import com.minh.myshop.exception.ProductStockInvalid;
+import com.minh.myshop.repository.CategoryRepository;
 import com.minh.myshop.repository.ProductRepository;
+import com.minh.myshop.repository.ShopRepository;
 import com.minh.myshop.service.ProductService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +21,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Lazy
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ShopRepository shopRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Product getById(Integer id) throws NotFoundException {
@@ -27,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getReferrerById(Integer id) {
+    public Product getReferrer(Integer id) {
 //        return productRepository.findReferrerByProductId(id).orElseThrow(() -> new NotFoundException("product not found with id = " + id));
         return productRepository.getReferenceById(id);
     }
@@ -35,6 +42,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product addProduct(Product product) {
         return productRepository.save(product);
+    }
+
+    @Override
+    public Product createProduct(ProductDto productDto) {
+        var p = new Product();
+        p.loadFromDto(productDto);
+        p.setShop(shopRepository.getReferenceById(productDto.getShopId()));
+        p.setCategory(categoryRepository.getReferenceById(productDto.getCategoryId()));
+        return p;
+    }
+
+    @Override
+    public Product updateProduct(ProductDto productDto) {
+        var p = this.getById(productDto.getProductId());
+        p.loadFromDto(productDto);
+        return this.addProduct(p);
     }
 
     @Override
@@ -56,12 +79,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAllByShopId(Integer shopId, int pageNumber, int pageSize, SortOrder sortOrder) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        if (sortOrder == SortOrder.ASC) {
-            return productRepository.findAllByOrderByCreatedAtAsc(pageable);
-        } else if (sortOrder == SortOrder.DESC) {
-            return productRepository.findAllByOrderByCreatedAtDesc(pageable);
+        if (sortOrder == SortOrder.DESC) {
+            return productRepository.findAllByShop_shopIdOrderByCreatedAtDesc(shopId, pageable);
         }
-        return productRepository.findAll(pageable);
+        return productRepository.findAllByShop_shopIdOrderByCreatedAtAsc(shopId, pageable);
     }
 
     @Override
@@ -78,9 +99,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = ProductStockInvalid.class)
-    public void changeListProductStock(List<CartProductDto> cartProductDtoList) throws ProductStockInvalid {
-        Product product = null;
-        for (var cartProductDto : cartProductDtoList) {
+    public void changeListProductStock(List<OrderItemDto> itemDtos) throws ProductStockInvalid {
+        for (var cartProductDto : itemDtos) {
             changeProductStock(cartProductDto.getProductId(), -cartProductDto.getQuantity());
         }
 

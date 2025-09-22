@@ -1,26 +1,23 @@
 package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.minh.myshop.dto.CartProductDto;
-import com.minh.myshop.repository.OrderRepository;
-import com.minh.myshop.repository.ProductRepository;
+import com.minh.myshop.dto.CartItemDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_products")
+@Table(name = "order_items")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class OrderProduct {
+public class OrderItem {
 
     @EmbeddedId
-    OrderProductId orderProductId = new OrderProductId();
+    OrderItemId orderItemId = new OrderItemId();
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @MapsId("orderId")
@@ -43,18 +40,18 @@ public class OrderProduct {
     @Column(name = "total_price", updatable = false, insertable = false)
     BigDecimal totalPrice;
 
-    public OrderProduct(Order order, Product product, int quantity) {
+    public OrderItem(Order order, Product product, int quantity) {
         this.order = order;
         this.product = product;
         this.unitPrice = this.product.getPrice();
         this.quantity = quantity;
-        this.orderProductId = new OrderProductId(order.getOrderId(), product.getProductId());
+        this.orderItemId = new OrderItemId(order.getOrderId(), product.getProductId());
     }
 
-    public OrderProduct(CartProductDto cartProductDto, Order order, Integer orderId, Product product) {
+    public OrderItem(CartItemDto cartProductDto, Order order, Integer orderId, Product product) {
         this.order = order;
         this.product = product;
-        this.orderProductId = new OrderProductId(orderId, cartProductDto.getProductId());
+        this.orderItemId = new OrderItemId(orderId, cartProductDto.getProductId());
         this.quantity = cartProductDto.getQuantity();
         this.unitPrice = cartProductDto.getUnitPrice();
         this.totalPrice = cartProductDto.getTotalPrice();

@@ -1,5 +1,6 @@
 package com.minh.myshop.entity;
 
+import com.minh.myshop.dto.ShopDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,11 @@ public class Shop {
     @UpdateTimestamp
     @Column(name = "updated_at")
     Date updatedAt;
+
+    public void loadFromDto(ShopDto shopDto) {
+        this.shopName = shopDto.getShopName();
+        this.logo = shopDto.getLogo();
+        this.introduce = shopDto.getIntroduce();
+        this.address = shopDto.getAddress();
+    }
 }

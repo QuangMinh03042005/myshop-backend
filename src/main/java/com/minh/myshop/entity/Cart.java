@@ -2,10 +2,13 @@ package com.minh.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NegativeOrZero;
-import lombok.*;
-import org.hibernate.annotations.Comment;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "carts")
 @Data
@@ -22,4 +25,10 @@ public class Cart {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
+    @JsonIgnore
+    @Builder.Default
+    List<CartItem> items = new ArrayList<>();
+
 }

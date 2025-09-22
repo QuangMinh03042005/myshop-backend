@@ -1,137 +1,86 @@
 package com.minh.myshop.controller;
 
-import com.minh.myshop.dto.CartDto;
-import com.minh.myshop.dto.CartProductDto;
-import com.minh.myshop.entity.CartProduct;
-import com.minh.myshop.entity.CartProductId;
-import com.minh.myshop.entity.Order;
-import com.minh.myshop.entity.OrderProduct;
-import com.minh.myshop.enums.OrderStatus;
+import com.minh.myshop.dto.CartItemDto;
+import com.minh.myshop.entity.CartItemId;
 import com.minh.myshop.exception.OutOfQuantityInStock;
-import com.minh.myshop.exception.ProductStockInvalid;
-import com.minh.myshop.repository.*;
-import com.minh.myshop.service.impl.*;
-import jakarta.transaction.Transactional;
+import com.minh.myshop.service.impl.CartItemServiceImpl;
+import com.minh.myshop.service.impl.CartServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/cart")
+@Lazy
+@RequestMapping("/api/users/{userId}/cart")
 @RequiredArgsConstructor
 public class CartController {
 
-    private final UserServiceImpl userService;
     private final CartServiceImpl cartService;
-    private final CartProductServiceImpl cartProductService;
-    private final ProductServiceImpl productService;
-    private final OrderServiceImpl orderService;
+    private final CartItemServiceImpl cartItemService;
 
-    private final ProductRepository productRepository;
-    private final CartRepository cartRepository;
-    private final CartProductRepository cartProductRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final OrderRepository orderRepository;
-
-    @GetMapping("/{userId}")
+    @GetMapping
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> getUserCartId(@PathVariable("userId") Integer userId) {
-        var cart = cartService.getCartByUserId(userId);
-        return ResponseEntity.ok().body(cart);
+    ResponseEntity<?> getCart(@PathVariable("userId") Integer userId) {
+        return ResponseEntity.ok(cartService.getCartByUserId(userId));
     }
 
-    @GetMapping("/products/{userId}")
+    @GetMapping("/items")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> getUserCart(@PathVariable("userId") Integer userId) {
-        var cart = cartService.getCartByUserId(userId);
-        var cartProductListDto = cartProductService.getAllProductByCartId(cart.getCartId()).stream().map(CartProductDto::new).toList();
-        var cartDto = new CartDto(cart.getCartId(), cartProductListDto);
-        return ResponseEntity.ok(cartDto);
+    ResponseEntity<?> getCartItem(@PathVariable("userId") Integer userId) {
+        return ResponseEntity.ok(cartItemService.getAllItemByUserId(userId));
     }
 
-    @PostMapping("/products")
+    @PostMapping("/items")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> addProductToCart(@RequestBody CartProductDto cartProductDto) throws OutOfQuantityInStock {
-        if (!productService.validateQuantity(cartProductDto.getProductId(), cartProductDto.getQuantity())) {
-            throw new OutOfQuantityInStock("Sản phẩm hiện tại đã hết hàng");
-        }
-        CartProductId cartProductId = new CartProductId(cartProductDto.getCartId(), cartProductDto.getProductId());
-        CartProduct cartProduct;
-        if (cartProductService.existById(cartProductId)) {
-            cartProduct = cartProductService.getById(cartProductId);
-            int newQuantity = cartProduct.getQuantity() + cartProductDto.getQuantity();
-            if (!productService.validateQuantity(cartProduct.getCartProductId().getProductId(), newQuantity)) {
-                throw new OutOfQuantityInStock(
-                        "Bạn đã có " + cartProduct.getQuantity() + " sản phẩm trong giỏ hàng. Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.");
-            }
-            cartProduct.setQuantity(newQuantity);
-        } else {
-            cartProduct = CartProduct.builder()
-                    .cart(cartService.getReferrerById(cartProductDto.getCartId()))
-                    .product(productService.getReferrerById(cartProductDto.getProductId()))
-                    .cartProductId(cartProductId)
-                    .unitPrice(cartProductDto.getUnitPrice())
-                    .quantity(cartProductDto.getQuantity())
-                    .build();
-        }
-        cartProductRepository.save(cartProduct);
-        return ResponseEntity.ok().build();
+    ResponseEntity<?> addItemToCart(@RequestBody CartItemDto cartItemDto) throws OutOfQuantityInStock {
+        cartItemService.addCartItem(cartItemDto);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/products")
+    @PutMapping("/items")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> updateProductFromCart(@RequestBody CartProductDto cartProductDto) throws OutOfQuantityInStock {
-        CartProductId cartProductId = new CartProductId(cartProductDto.getCartId(), cartProductDto.getProductId());
-        CartProduct cartProduct = cartProductService.getById(cartProductId);
-        if (!productService.validateQuantity(cartProductDto.getProductId(), cartProductDto.getQuantity())) {
-            throw new OutOfQuantityInStock(
-                    "Bạn đã có " + cartProduct.getQuantity() + " sản phẩm trong giỏ hàng. Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.");
-        }
-        cartProduct.setQuantity(cartProductDto.getQuantity());
-        cartProductRepository.save(cartProduct);
-        return ResponseEntity.ok().build();
+    ResponseEntity<?> updateProductFromCart(@RequestBody CartItemDto cartItemDto) throws OutOfQuantityInStock {
+        cartItemService.updateCartItem(cartItemDto);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/products")
+    @DeleteMapping("/items")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<?> removeProductFromCart(@RequestBody CartProductId cartProductId) {
-        var cartProduct = cartProductService.getById(cartProductId);
-        cartProductRepository.delete(cartProduct);
-        return ResponseEntity.ok().build();
+    ResponseEntity<?> removeProductFromCart(@RequestBody CartItemId cartProductId) {
+        cartItemService.deleteCartItem(cartProductId);
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/checkoutCart/{userId}")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
-    ResponseEntity<?> checkoutCart(@PathVariable("userId") Integer userId, @RequestBody List<CartProductDto> cartProductDtoList) throws ProductStockInvalid {
-//         1. change all product stock
-        productService.changeListProductStock(cartProductDtoList);
-        // 2. create a new order
-        System.out.println(cartProductDtoList);
-        Order order = Order.builder().user(userService.getReferrerById(userId)).build();
-        // 3. save it to db and get it's id
-        var savedOrder = orderRepository.saveAndFlush(order);
-        var orderId = savedOrder.getOrderId();
-        // 4. map cartProductDto to OrderProduct
-        List<OrderProduct> orderProductList = cartProductDtoList.stream().map(cartProductDto -> new OrderProduct(cartProductDto, orderService.getReferrerById(orderId), orderId, productService.getReferrerById(cartProductDto.getProductId()))).toList();
-        // 5. save orderProductList
-        orderProductRepository.saveAll(orderProductList);
-        // 6. set status
-        savedOrder.setOrderStatus(OrderStatus.COMPLETED);
-        // 7 . calculate total amount and set
-        var totalAmount = cartProductDtoList.stream()
-                .map(CartProductDto::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        System.out.println(totalAmount);
-        savedOrder.setTotalAmount(totalAmount);
-        // 8 . save order to db
-        orderRepository.save(savedOrder);
-        // 9. delete products in cartProduct
-        cartProductRepository.deleteAllById(cartProductDtoList.stream().map(cartProductDto -> new CartProductId(cartProductDto.getCartId(), cartProductDto.getProductId())).toList());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/checkoutCart/{userId}")
+//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+//    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+//    ResponseEntity<?> checkoutCart(@PathVariable("userId") Integer userId, @RequestBody List<CartItemDto> cartProductDtoList) throws ProductStockInvalid {
+////         1. change all product stock
+//        productService.changeListProductStock(cartProductDtoList);
+//        // 2. create a new order
+//        System.out.println(cartProductDtoList);
+//        Order order = Order.builder().user(userService.getReferrer(userId)).build();
+//        // 3. save it to db and get it's id
+//        var savedOrder = orderRepository.saveAndFlush(order);
+//        var orderId = savedOrder.getOrderId();
+//        // 4. map cartProductDto to OrderProduct
+//        List<OrderItem> orderProductList = cartProductDtoList.stream().map(cartProductDto -> new OrderItem(cartProductDto, orderService.getReferrer(orderId), orderId, productService.getReferrer(cartProductDto.getProductId()))).toList();
+//        // 5. save orderProductList
+//        orderItemRepository.saveAll(orderProductList);
+//        // 6. set status
+//        savedOrder.setOrderStatus(OrderStatus.COMPLETED);
+//        // 7 . calculate total amount and set
+//        var totalAmount = cartProductDtoList.stream()
+//                .map(CartItemDto::getTotalPrice)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        System.out.println(totalAmount);
+//        savedOrder.setTotalAmount(totalAmount);
+//        // 8 . save order to db
+//        orderRepository.save(savedOrder);
+//        // 9. delete products in cartProduct
+//        cartItemRepository.deleteAllById(cartProductDtoList.stream().map(cartProductDto -> new CartItemId(cartProductDto.getCartId(), cartProductDto.getProductId())).toList());
+//        return ResponseEntity.ok().build();
+//    }
 }

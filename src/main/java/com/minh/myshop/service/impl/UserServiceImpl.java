@@ -1,18 +1,22 @@
 package com.minh.myshop.service.impl;
 
+import com.minh.myshop.dto.UserDto;
+import com.minh.myshop.entity.Role;
 import com.minh.myshop.entity.User;
 import com.minh.myshop.exception.NotFoundException;
+import com.minh.myshop.repository.RoleRepository;
 import com.minh.myshop.repository.UserRepository;
 import com.minh.myshop.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
+@Lazy
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public User getById(Integer id) throws NotFoundException {
@@ -20,7 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getReferrerById(Integer id) {
+    public User getReferrer(Integer id) {
         return userRepository.getReferenceById(id);
     }
 
@@ -35,7 +39,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public UserDto addUser(User user) {
+        return new UserDto(userRepository.save(user));
+    }
+
+    @Override
+    public void addUserRole(Integer id, Role role) {
+        var user = this.getById(id);
+        role = roleRepository.findByName(role.getName());
+        var roles = user.getRoles();
+        roles.add(role);
+        user.setRoles(roles);
+        this.addUser(user);
+    }
+
+    @Override
+    public UserDto updateUser(Integer id, UserDto userDto) {
+        var user = this.getById(id);
+        user.loadFromDto(userDto);
+        return this.addUser(user);
     }
 }
